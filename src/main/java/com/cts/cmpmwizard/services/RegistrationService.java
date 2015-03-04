@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 import com.cts.cmpmwizard.beans.User;
 import com.cts.cmpmwizard.dao.UserDao;
-import com.cts.cmpmwizard.repositories.UserRepository;
-
 
 @Component("register")
 public class RegistrationService {

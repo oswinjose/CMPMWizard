@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cts.cmpmwizard.beans.LoginUser;
 import com.cts.cmpmwizard.beans.User;
+import com.cts.cmpmwizard.services.LoginService;
 import com.cts.cmpmwizard.services.RegistrationService;
 
 /**
@@ -29,29 +31,32 @@ public class HomeController {
 	@Autowired
 	@Qualifier("register")
 	private RegistrationService registerUser;
+	@Autowired
+	@Qualifier("login")
+	private LoginService loginService;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate );
+	public String home(@ModelAttribute("loginUser") LoginUser user) {
 		
 		return "home";
 	}
 	
-	@RequestMapping(value = "/handleLogin", method = RequestMethod.GET)
-	public String handleLogin(Model model) {
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(@ModelAttribute("loginUser") LoginUser user) {
 		
+		return "home";
+	}
+	
+	@RequestMapping(value = "/handleLogin", method = RequestMethod.POST)
+	public String handleLogin(@ModelAttribute("loginUser") LoginUser user,Model model) {
 		
+		User authUser = loginService.doLogin(user);
+		logger.info("Inside controller -- found user : "+authUser);
 		model.addAttribute("AUTH_STATUS","SUCCESS");
-		
+		model.addAttribute("user",user);
 		return "userhome";
 	}
 	
@@ -64,10 +69,9 @@ public class HomeController {
 	@RequestMapping(value = "/handleSetup", method = RequestMethod.POST)
 	public String handleSetup(@ModelAttribute("user") User user, Model model) {
 		logger.info("------------------> Inside setup view ");
-		System.out.println("Email: "+user.getEmail());
-		System.out.println("Name: "+user.getFullName());
 		model.addAttribute("name", user.getFullName());
 		model.addAttribute("AUTH_STATUS","SUCCESS");
+		model.addAttribute("user",user);
 		registerUser.doRegister(user);
 		
 		logger.info("------------------> After saving user");

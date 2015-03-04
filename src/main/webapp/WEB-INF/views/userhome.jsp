@@ -8,8 +8,8 @@
   <div class="container-fluid">
     <h1>CMPM Reporting Wizard</h1>
     <p>Configure resource pool and generate CMPM Reports - Dashboard</p>
-    <p>User Home Page</p>
-    ${name}
+    <p>Welcome, ${user.fullName}!</p>
+    
       
   </div>
     <%@include file="fragments/footer.jsp" %>
